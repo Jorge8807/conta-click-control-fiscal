@@ -1,0 +1,121 @@
+.filters {
+  background: #edf3fb;
+  border-radius: 8px;
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  padding: 0.75rem;
+}
+
+.filterGroup {
+  background: #e5eef8;
+  border-radius: 8px;
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  padding: 0.25rem;
+  width: fit-content;
+}
+
+.filterGroup button {
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: #41536a;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.65rem 0.8rem;
+}
+
+.filterGroup .active {
+  background: #ffffff;
+  color: #1d4ed8;
+  box-shadow: 0 1px 4px rgba(16, 32, 51, 0.12);
+}
+
+.fieldGrid {
+  align-items: end;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+}
+
+.selectLabel,
+.searchLabel {
+  color: #41536a;
+  display: grid;
+  font-size: 0.9rem;
+  font-weight: 700;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.selectLabel select,
+.searchLabel input {
+  background: #ffffff;
+  border: 1px solid #c9d6e5;
+  border-radius: 8px;
+  font: inherit;
+  padding: 0.7rem 0.85rem;
+  width: 100%;
+}
+
+.searchLabel {
+  grid-column: 1 / -1;
+}
+
+.clearButton,
+.cancelButton,
+.confirmButton {
+  background: #ffffff;
+  border: 1px solid #c9d6e5;
+  border-radius: 8px;
+  color: #41536a;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.7rem 0.85rem;
+}
+
+.bulkActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.cancelButton {
+  color: #41536a;
+}
+
+.confirmButton {
+  background: #b42318;
+  border-color: #b42318;
+  color: #ffffff;
+}
+
+@media (max-width: 720px) {
+  .fieldGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .filterGroup {
+    width: 100%;
+  }
+
+  .actionsRow,
+  .bulkActions {
+    justify-content: stretch;
+  }
+
+  .actionsRow button,
+  .bulkActions button {
+    flex: 1;
+  }
+}

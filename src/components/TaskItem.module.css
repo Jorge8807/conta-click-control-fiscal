@@ -1,0 +1,170 @@
+.item {
+  align-items: center;
+  animation: fadeIn 180ms ease-out;
+  background: #ffffff;
+  border: 1px solid #dbe4f0;
+  border-radius: 8px;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(112px, 0.5fr) 1fr auto;
+  padding: 1rem;
+}
+
+.completed {
+  background: #f7fbff;
+}
+
+.checkboxLabel {
+  align-items: center;
+  color: #41536a;
+  display: flex;
+  font-weight: 700;
+  gap: 0.5rem;
+}
+
+.checkboxLabel input {
+  accent-color: #2563eb;
+  height: 1.1rem;
+  width: 1.1rem;
+}
+
+.titleRow {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.content h3 {
+  color: #102033;
+  margin: 0;
+}
+
+.content p {
+  color: #41536a;
+  margin: 0.25rem 0 0;
+}
+
+.client,
+.serviceType,
+.priority,
+.dueDate {
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 0.2rem 0.55rem;
+}
+
+.client {
+  background: #f8fafc;
+  color: #102033;
+}
+
+.serviceType {
+  background: #f1f5f9;
+  color: #41536a;
+}
+
+.high {
+  background: #fff3f2;
+  color: #b42318;
+}
+
+.medium {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.low {
+  background: #ecfdf3;
+  color: #047857;
+}
+
+.dueDate {
+  background: #f8fafc;
+  color: #41536a;
+}
+
+.overdue {
+  background: #fff3f2;
+  color: #b42318;
+}
+
+.today {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.upcoming {
+  background: #ecfdf3;
+  color: #047857;
+}
+
+.completed h3,
+.completed p {
+  text-decoration: line-through;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actions a,
+.actions button {
+  border: 1px solid #c9d6e5;
+  border-radius: 8px;
+  color: #102033;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.6rem 0.75rem;
+  text-decoration: none;
+}
+
+.actions button {
+  background: #fff3f2;
+  border-color: #f3b8b3;
+  color: #b42318;
+}
+
+.actions .cancelButton {
+  background: #ffffff;
+  border-color: #c9d6e5;
+  color: #41536a;
+}
+
+.actions .confirmButton {
+  background: #b42318;
+  border-color: #b42318;
+  color: #ffffff;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 760px) {
+  .item {
+    align-items: start;
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .actions a,
+  .actions button {
+    text-align: center;
+    width: 100%;
+  }
+}

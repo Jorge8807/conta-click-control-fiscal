@@ -1,0 +1,39 @@
+.header {
+  align-items: center;
+  background: #ffffff;
+  border-bottom: 1px solid #dbe4f0;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem clamp(1rem, 4vw, 3rem);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.header h1 {
+  color: #102033;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+  margin: 0;
+}
+
+.eyebrow {
+  color: #2563eb;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.2rem;
+  text-transform: uppercase;
+}
+
+.nav a {
+  border-radius: 999px;
+  color: #102033;
+  font-weight: 700;
+  padding: 0.55rem 0.9rem;
+  text-decoration: none;
+}
+
+.nav a[aria-current='page'] {
+  background: #e8f0ff;
+  color: #1d4ed8;
+}
