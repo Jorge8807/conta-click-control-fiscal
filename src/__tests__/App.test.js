@@ -7,17 +7,23 @@ import { addDaysToLocalDate, formatLocalDate } from '../utils/date';
 
 let testId = 0;
 
-function renderApp() {
+function renderApp({ initialEntries = ['/tasks'], storedTasks } = {}) {
   testId += 1;
   const storageKey = `test-tasks-${testId}`;
 
-  return render(
-    <MemoryRouter initialEntries={['/tasks']}>
+  if (storedTasks) {
+    window.localStorage.setItem(storageKey, JSON.stringify(storedTasks));
+  }
+
+  const result = render(
+    <MemoryRouter initialEntries={initialEntries}>
       <TaskProvider storageKey={storageKey}>
         <App />
       </TaskProvider>
     </MemoryRouter>
   );
+
+  return { ...result, storageKey };
 }
 
 function getControl(id) {
@@ -47,6 +53,83 @@ describe('App', () => {
     expect(screen.getAllByText('Declaracion')[0]).toBeInTheDocument();
     expect(screen.getAllByText('Alta')[0]).toBeInTheDocument();
     expect(screen.getByText(/30\/06\/2026/)).toBeInTheDocument();
+  });
+
+  test('permite editar una tarea desde su ruta', async () => {
+    renderApp({ initialEntries: ['/tasks/task-1/edit'] });
+
+    userEvent.clear(getControl('client'));
+    userEvent.type(getControl('client'), 'Cliente actualizado');
+    userEvent.clear(getControl('description'));
+    userEvent.type(getControl('description'), 'Expediente fiscal actualizado');
+    userEvent.click(screen.getByRole('button', { name: /guardar cambios/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Expediente fiscal actualizado')).toBeInTheDocument();
+      expect(screen.getByText('Cliente actualizado', { selector: 'span' })).toBeInTheDocument();
+    });
+  });
+
+  test('permite marcar una tarea como completada desde la interfaz', async () => {
+    renderApp();
+
+    const pendingCheckbox = screen.getByRole('checkbox', { name: 'Pendiente' });
+    userEvent.click(pendingCheckbox);
+
+    await waitFor(() => {
+      expect(pendingCheckbox).toBeChecked();
+      expect(screen.getAllByRole('checkbox', { name: 'Completada' })).toHaveLength(2);
+    });
+  });
+
+  test('busca tareas por su descripcion', async () => {
+    renderApp();
+
+    userEvent.type(getControl('search'), 'balanza');
+
+    expect(await screen.findByText(/revisar balanza/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText(/confirmar expediente fiscal/i)).not.toBeInTheDocument();
+    });
+  });
+
+  test('muestra errores cuando faltan campos obligatorios', async () => {
+    renderApp();
+
+    userEvent.click(screen.getByRole('button', { name: /agregar tarea/i }));
+
+    expect(await screen.findByText('El cliente es obligatorio.')).toBeInTheDocument();
+    expect(screen.getByText('La descripcion es obligatoria.')).toBeInTheDocument();
+    expect(getControl('client')).toHaveAttribute('aria-invalid', 'true');
+    expect(getControl('description')).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  test('recupera tareas guardadas en localStorage', () => {
+    const storedTask = {
+      id: 'stored-task',
+      client: 'Cliente persistente',
+      serviceType: 'finance',
+      description: 'Tarea recuperada del navegador',
+      priority: 'low',
+      dueDate: addDaysToLocalDate(2),
+      completed: false,
+      createdAt: new Date().toISOString()
+    };
+
+    renderApp({ storedTasks: [storedTask] });
+
+    expect(screen.getByText('Tarea recuperada del navegador')).toBeInTheDocument();
+    expect(screen.getAllByText('Cliente persistente')[0]).toBeInTheDocument();
+  });
+
+  test('muestra la pagina no encontrada para una ruta invalida', () => {
+    renderApp({ initialEntries: ['/ruta-inexistente'] });
+
+    expect(screen.getByRole('heading', { name: 'Pagina no encontrada' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Volver al listado' })).toHaveAttribute(
+      'href',
+      '/tasks'
+    );
   });
 
   test('filtra las tareas completadas', async () => {
