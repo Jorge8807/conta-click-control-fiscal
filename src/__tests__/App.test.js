@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
 import { TaskProvider } from '../context/TaskContext';
+import { addDaysToLocalDate, formatLocalDate } from '../utils/date';
 
 let testId = 0;
 
@@ -111,8 +112,8 @@ describe('App', () => {
   test('muestra fechas limite en las tareas', () => {
     renderApp();
 
-    expect(screen.getByText(/25\/06\/2026/)).toBeInTheDocument();
-    expect(screen.getByText(/23\/06\/2026/)).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(formatLocalDate(addDaysToLocalDate(3))))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(formatLocalDate(addDaysToLocalDate(1))))).toBeInTheDocument();
   });
 
   test('ordena tareas por fecha limite', async () => {

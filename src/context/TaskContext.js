@@ -8,6 +8,7 @@ import {
   useState
 } from 'react';
 import { loadTasks, saveTasks } from '../utils/storage';
+import { addDaysToLocalDate } from '../utils/date';
 
 const TaskContext = createContext(null);
 
@@ -23,28 +24,37 @@ const serviceTypes = [
   { label: 'Otro', value: 'other' }
 ];
 
-const initialTasks = [
-  {
-    id: 'task-1',
-    client: 'Conta Click',
-    serviceType: 'documentation',
-    description: 'Confirmar expediente fiscal, documentos pendientes y rutas del flujo.',
-    priority: 'high',
-    dueDate: '2026-06-25',
-    completed: false,
-    createdAt: '2026-06-24T12:00:00.000Z'
-  },
-  {
-    id: 'task-2',
-    client: 'Despacho fiscal demo',
-    serviceType: 'accounting',
-    description: 'Revisar balanza, XML y conciliaciones del periodo.',
-    priority: 'medium',
-    dueDate: '2026-06-23',
-    completed: true,
-    createdAt: '2026-06-24T13:00:00.000Z'
-  }
-];
+const legacyDemoDueDates = {
+  'task-1': '2026-06-25',
+  'task-2': '2026-06-23'
+};
+
+function createInitialTasks() {
+  const createdAt = new Date().toISOString();
+
+  return [
+    {
+      id: 'task-1',
+      client: 'Conta Click',
+      serviceType: 'documentation',
+      description: 'Confirmar expediente fiscal, documentos pendientes y rutas del flujo.',
+      priority: 'high',
+      dueDate: addDaysToLocalDate(3),
+      completed: false,
+      createdAt
+    },
+    {
+      id: 'task-2',
+      client: 'Despacho fiscal demo',
+      serviceType: 'accounting',
+      description: 'Revisar balanza, XML y conciliaciones del periodo.',
+      priority: 'medium',
+      dueDate: addDaysToLocalDate(1),
+      completed: true,
+      createdAt
+    }
+  ];
+}
 
 const actions = {
   add: 'ADD_TASK',
@@ -59,12 +69,20 @@ function createTaskId() {
 }
 
 function normalizeTasks(tasks) {
+  const demoDueDates = {
+    'task-1': addDaysToLocalDate(3),
+    'task-2': addDaysToLocalDate(1)
+  };
+
   return tasks.map((task) => ({
     ...task,
     client: task.client ?? 'Sin cliente',
     serviceType: task.serviceType ?? 'other',
     priority: task.priority ?? 'medium',
-    dueDate: task.dueDate ?? ''
+    dueDate:
+      legacyDemoDueDates[task.id] === task.dueDate
+        ? demoDueDates[task.id]
+        : task.dueDate ?? ''
   }));
 }
 
@@ -158,7 +176,7 @@ export function TaskProvider({ children, storageKey = 'react-final-tasks' }) {
   const [tasks, dispatch] = useReducer(
     taskReducer,
     storageKey,
-    (key) => normalizeTasks(loadTasks(key) ?? initialTasks)
+    (key) => normalizeTasks(loadTasks(key) ?? createInitialTasks())
   );
   const [filter, setFilter] = useState('all');
   const [clientFilter, setClientFilter] = useState('all');
@@ -310,4 +328,4 @@ export function useTasks() {
   return context;
 }
 
-export { actions, taskReducer, initialTasks, serviceTypes };
+export { actions, taskReducer, serviceTypes };

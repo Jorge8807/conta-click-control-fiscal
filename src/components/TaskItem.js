@@ -1,6 +1,7 @@
 import { memo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { serviceTypes } from '../context/TaskContext';
+import { formatLocalDate, toLocalDateString } from '../utils/date';
 import styles from './TaskItem.module.css';
 
 const priorityLabels = {
@@ -9,21 +10,12 @@ const priorityLabels = {
   low: 'Baja'
 };
 
-function getTodayDateString() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function formatDueDate(dueDate) {
-  const [year, month, day] = dueDate.split('-');
-  return `${day}/${month}/${year}`;
-}
-
 function getDueDateState(task) {
   if (!task.dueDate || task.completed) {
     return null;
   }
 
-  const today = getTodayDateString();
+  const today = toLocalDateString();
 
   if (task.dueDate < today) {
     return 'overdue';
@@ -80,7 +72,7 @@ function TaskItem({ task, onRemove, onToggle }) {
               {dueDateState === 'overdue' && 'Vencida '}
               {dueDateState === 'today' && 'Vence hoy '}
               {dueDateState === 'upcoming' && 'Proxima '}
-              {formatDueDate(task.dueDate)}
+              {formatLocalDate(task.dueDate)}
             </span>
           )}
         </div>
